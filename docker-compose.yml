@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    container_name: matrix-api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017
+    volumes:
+      - .:/app  # opcional: útil para desenvolvimento local com live reload (se usar)
+    restart: always
+
+  mongodb:
+    image: mongo:6
+    container_name: matrix-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    restart: always
+
+volumes:
+  mongodb_data:

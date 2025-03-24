@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.log
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Editor configs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temp uploads
+temp_uploads/
+
+# Docker
+*.pid
+*.sock
+*.db
+
+# Models (evita push de arquivos grandes!)
+models/
+models/*
+
+# Mongo data (caso use volumes locais)
+mongodb_data/
+
+# Jupyter (caso use futuramente)
+.ipynb_checkpoints/
+
+# Environment variables
+.env
+
+# Compiled source
+*.egg
+*.egg-info/
+dist/
+build/
+*.manifest
+*.spec
+
+# PyInstaller
+*.spec
+
+# Node (caso misture com front)
+node_modules/
+
+# Matrix Neural Genesis specific
+samples/
