@@ -24,7 +24,6 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .
 
-# ✅ Copia os modelos baixados para dentro do container
 COPY models ./models
 
 EXPOSE 8000
