@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
   libboost-filesystem-dev \
   git \
   curl \
+  unzip \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -21,8 +22,15 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
+# 🔽 Instala o gdown (via pip)
+RUN pip install gdown
+
 COPY . .
-COPY models ./models
+
+# 🔽 Baixa o models.zip do Google Drive (com bypass de verificação) e extrai
+RUN gdown https://drive.google.com/uc?id=12aoLkLp_Kw1XyIbm5j4Fp6bapNhSoYn0 && \
+  unzip models.zip -d ./models && \
+  rm models.zip
 
 EXPOSE 8000
 
