@@ -4,7 +4,6 @@ import os
 # Lê URI do MongoDB das variáveis de ambiente
 MONGO_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
 
-# Cria conexão com o MongoDB
 client = MongoClient(MONGO_URI)
 db = client["matrix_neural"]  # Nome do banco de dados
 faces_collection = db["faces"]  # Nome da coleção onde as faces serão salvas
