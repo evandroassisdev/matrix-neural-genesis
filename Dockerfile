@@ -1,4 +1,6 @@
 FROM python:3.10-slim
+ARG ENV=production
+ENV ENV=${ENV}
 
 RUN apt-get update && apt-get install -y \
   build-essential \
@@ -22,15 +24,19 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# 🔽 Instala o gdown (via pip)
 RUN pip install gdown
 
 COPY . .
 
-# 🔽 Baixa o models.zip do Google Drive (com bypass de verificação) e extrai
-RUN gdown https://drive.google.com/uc?id=12aoLkLp_Kw1XyIbm5j4Fp6bapNhSoYn0 && \
-  unzip models.zip -d ./models && \
-  rm models.zip
+# 🔽 Só baixa e extrai o modelo se estiver em produção
+RUN if [ "$ENV" = "production" ]; then \
+  echo "🔽 Download models" && \
+  gdown https://drive.google.com/uc?id=12aoLkLp_Kw1XyIbm5j4Fp6bapNhSoYn0 && \
+  unzip -o models.zip -d ./models && \
+  rm models.zip ; \
+  else \
+  echo "🧪 Ambiente de desenvolvimento - usando models locais" ; \
+  fi
 
 EXPOSE 8000
 

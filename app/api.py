@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Header, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import os
@@ -16,19 +16,29 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # ou ["*"] para liberar geral (apenas para testes)
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+def verify_api_key(x_api_key: str = Header(...)):
+    expected_key = os.getenv("FACE_API_SECRET")
+    if x_api_key != expected_key:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Unauthorized"
+        )
+
 @app.get("/")
 def read_root():
     return {"message": "Matrix Neural Identity API is running."}
 
-
 @app.post("/register_smart")
-async def register_face(file: UploadFile = File(...)):
+async def register_face(
+    file: UploadFile = File(...),
+    auth=Depends(verify_api_key)
+):
     temp_path = save_temp_file(file)
     vector = get_face_vector(temp_path)
 
@@ -72,7 +82,7 @@ async def register_face(file: UploadFile = File(...)):
                 }
             }
         )
-        
+
         os.remove(temp_path)
         return JSONResponse(status_code=200, content={
             "message": "Face already registered (new vector added)",
@@ -96,8 +106,7 @@ async def register_face(file: UploadFile = File(...)):
         "hash": face_hash
     })
 
-
 @app.get("/faces")
-def get_all_faces():
+def get_all_faces(auth=Depends(verify_api_key)):
     total = faces_collection.count_documents({})
     return {"registered_identities": total}

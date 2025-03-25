@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  app:
+    volumes:
+      - .:/app              # Código local sincronizado com o container
+      - ./models:/app/models  # Usa sua pasta local de modelos, sem baixar nada
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
